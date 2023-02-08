@@ -19,16 +19,16 @@ function ProfitSlider() {
   const [priceOutput, setPriceOutput] = useState({
     //set price output values
     kit1: {
-      0: ["$", "0"],
-      1: ["$", "200"],
-      2: ["$", "400"],
-      3: ["$", "600"],
-      4: ["$", "800"],
-      5: ["$", "1000"],
-      6: ["$", "1200"],
-      7: ["$", "1400"],
-      8: ["$", "1600"],
-      9: ["$", "1800"],
+      0: ["$", "0.00"],
+      1: ["$", "200.00"],
+      2: ["$", "400.00"],
+      3: ["$", "600.00"],
+      4: ["$", "800.00"],
+      5: ["$", "1000.00"],
+      6: ["$", "1200.00"],
+      7: ["$", "1400.00"],
+      8: ["$", "1600.00"],
+      9: ["$", "1800.00"],
     },
   });
 
@@ -47,6 +47,12 @@ function ProfitSlider() {
     );
     handleSliderValuePosition(slider.current);
   }, []); // [] - runs only on the 1st render
+
+  const [unitPrice, setUnitPrice] = useState("40.00"); //set user-directed unit price (in input box)
+  // to handle unit price (in input box)
+  const handleUnitPrice = (e) => {
+    setUnitPrice(e.target.value);
+  };
 
   const handlePricingSlide = (e) => {
     //handle the slider
@@ -94,36 +100,50 @@ function ProfitSlider() {
         </div>
       </div>
       <div className="pricing-slider-footnote">
-        Sell {getPricingData(priceInput)} kits and raise <b>$XXXXX(Profit)</b>
+        Sell {getPricingData(priceInput)} kits and raise{" "}
+        <b>
+          Profit: $
+          {(
+            getPricingData(priceInput) * unitPrice -
+            getPricingData(priceOutput.kit1, 1)
+          ).toFixed(2)}
+        </b>
       </div>
       {/* Price Output (Via Display) */}
       <div className="pricing-item">
         <div className="pricing-item-title">
           Buy <b>{getPricingData(priceInput)}</b> teatowels @ <b>$20.00</b> and
-          sell them @<label for="unit-cost"> $ </label>
+          sell them @<label for="unit-price"> $ </label>
           <input
             type="number"
-            id="unit-cost"
-            name="unit-cost"
-            min="0.00"
-            max="1000.00"
+            id="unit-price"
+            name="unit-price"
             step="0.01"
-            placeholder="40.00"
+            min="0"
+            max="100"
+            defaultValue={unitPrice}
+            onChange={handleUnitPrice}
           />
           {} each.
         </div>
         <div className="pricing-item-price">
-          Total Cost:
-          <span className="pricing-item-price-currency">
-            {getPricingData(priceOutput.kit1, 0)}
-          </span>
-          <span className="pricing-item-price-amount">
-            {getPricingData(priceOutput.kit1, 1)}
-          </span>
+          Cost: ${getPricingData(priceOutput.kit1, 1)}
         </div>
       </div>
-      <div>Total Revenue: $xxx (unit cost*kits)</div>
-      <div>Total Profit (Revenue-Cost): $xxx</div>
+      <div>
+        <b> Revenue: ${(getPricingData(priceInput) * unitPrice).toFixed(2)} </b>
+        <i>(no. of kits * unit price)</i>
+      </div>
+      <div>
+        <b>
+          Profit: $
+          {(
+            getPricingData(priceInput) * unitPrice -
+            getPricingData(priceOutput.kit1, 1)
+          ).toFixed(2)}
+        </b>
+        <i> ( revenue- cost)</i>
+      </div>
     </div>
   );
 }
